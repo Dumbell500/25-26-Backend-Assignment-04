@@ -75,4 +75,13 @@ public class JwtTokenProvider {
                 .parseSignedClaims(token)
                 .getPayload();
     }
+
+    // 설정 값 조회용 getter
+    public long getRefreshValidityMs() {
+        return refreshValidityMs;
+    }
+
+    public long getAccessValidityMs() {
+        return accessValidityMs;
+    }
 }
