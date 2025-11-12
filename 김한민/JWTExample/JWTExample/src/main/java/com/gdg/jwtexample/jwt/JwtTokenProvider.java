@@ -2,6 +2,7 @@ package com.gdg.jwtexample.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
+import com.gdg.jwtexample.domain.Role;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
@@ -25,18 +26,19 @@ public class JwtTokenProvider {
         this.accessValidityMs = accessValidityMs;
         this.refreshValidityMs = refreshValidityMs;
     }
-    // 엑시트 토큰 발급
-    public String createAccessToken(String email, String role) {
+    // 엑세스 토큰 발급
+    public String createAccessToken(String email, Role role) {
         Date now = new Date();
         Date exp = new Date(now.getTime() + accessValidityMs);
         return Jwts.builder()
                 .subject(email)
-                .claim("role", role)
+                .claim("role", role.name()) // 🔹 enum → "ROLE_USER" 같은 문자열로 저장
                 .issuedAt(now)
                 .expiration(exp)
                 .signWith(key, Jwts.SIG.HS256)
                 .compact();
     }
+
     // 리프레시 토큰 발급
     public String createRefreshToken(String email) {
         Date now = new Date();

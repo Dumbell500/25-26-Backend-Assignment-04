@@ -1,6 +1,7 @@
 package com.gdg.jwtexample.service;
 
 import com.gdg.jwtexample.domain.RefreshToken;
+import com.gdg.jwtexample.domain.Role;
 import com.gdg.jwtexample.domain.User;
 import com.gdg.jwtexample.dto.auto.LoginRequest;
 import com.gdg.jwtexample.dto.auto.SignupRequest;
@@ -8,6 +9,8 @@ import com.gdg.jwtexample.dto.auto.TokenResponse;
 import com.gdg.jwtexample.jwt.JwtTokenProvider;
 import com.gdg.jwtexample.repository.RefreshTokenRepository;
 import com.gdg.jwtexample.repository.UserRepository;
+import com.gdg.jwtexample.domain.Role;
+
 import java.time.Instant;
 import java.util.NoSuchElementException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -36,7 +39,7 @@ public class AuthService {
         if (userRepository.existsByEmail(req.email())) {
             throw new IllegalArgumentException("이미 가입된 이메일입니다.");
         }
-        User user = new User(req.email(), encoder.encode(req.password()), "ROLE_USER");
+        User user = new User(req.email(), encoder.encode(req.password()), Role.ROLE_USER); // 여기 수정
         userRepository.save(user);
     }
 
