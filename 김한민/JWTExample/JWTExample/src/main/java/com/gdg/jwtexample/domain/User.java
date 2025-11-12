@@ -2,21 +2,23 @@ package com.gdg.jwtexample.domain;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import jakarta.persistence.Enumerated;
+import jakarta.persistence.EnumType;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "users")
 @Getter
-@NoArgsConstructor
-
+@NoArgsConstructor(access = AccessLevel.PROTECTED) // JPA용 기본 생성자는 보호
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -27,11 +29,12 @@ public class User {
     @Column(nullable = false, length = 200)
     private String password;
 
-    @Enumerated(EnumType.STRING) // @Enumerated(EnumType.STRING) 덕분에 DB에는 ROLE_USER 이런 문자열로 저장되어, 지금처럼 문자열로 비교하거나 JWT claim에 넣어 쓰기 편해짐.
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false, length = 20)
-    private Role role;
+    private UserRole role; // 예: ROLE_USER, ROLE_ADMIN
 
-    public User(String email, String password, Role role) {
+    @Builder
+    public User(String email, String password, UserRole role) {
         this.email = email;
         this.password = password;
         this.role = role;

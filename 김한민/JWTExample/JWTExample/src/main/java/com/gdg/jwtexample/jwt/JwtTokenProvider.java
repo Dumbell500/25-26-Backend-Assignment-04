@@ -1,9 +1,8 @@
 package com.gdg.jwtexample.jwt;
 
+import com.gdg.jwtexample.domain.UserRole;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
-import com.gdg.jwtexample.domain.Role;
-import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
 import java.nio.charset.StandardCharsets;
 import javax.crypto.SecretKey;
@@ -13,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class JwtTokenProvider {
+
     private final SecretKey key;
     private final long accessValidityMs;
     private final long refreshValidityMs;
@@ -26,13 +26,15 @@ public class JwtTokenProvider {
         this.accessValidityMs = accessValidityMs;
         this.refreshValidityMs = refreshValidityMs;
     }
-    // 엑세스 토큰 발급
-    public String createAccessToken(String email, Role role) {
+
+    // 액세스 토큰 발급 (UserRole 사용)
+    public String createAccessToken(String email, UserRole role) {
         Date now = new Date();
         Date exp = new Date(now.getTime() + accessValidityMs);
+
         return Jwts.builder()
                 .subject(email)
-                .claim("role", role.name()) // 🔹 enum → "ROLE_USER" 같은 문자열로 저장
+                .claim("role", role.name()) // "ROLE_USER" 문자열로 저장
                 .issuedAt(now)
                 .expiration(exp)
                 .signWith(key, Jwts.SIG.HS256)
@@ -43,6 +45,7 @@ public class JwtTokenProvider {
     public String createRefreshToken(String email) {
         Date now = new Date();
         Date exp = new Date(now.getTime() + refreshValidityMs);
+
         return Jwts.builder()
                 .subject(email)
                 .issuedAt(now)
@@ -50,6 +53,7 @@ public class JwtTokenProvider {
                 .signWith(key, Jwts.SIG.HS256)
                 .compact();
     }
+
     // 토큰 유효성 검증
     public boolean isValid(String token) {
         try {
@@ -62,6 +66,7 @@ public class JwtTokenProvider {
             return false;
         }
     }
+
     // Claims 추출
     public Claims parseClaims(String token) {
         return Jwts.parser()
