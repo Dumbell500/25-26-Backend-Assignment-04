@@ -6,6 +6,7 @@ import com.gdg.jwtexample.dto.auto.SignupRequest;
 import com.gdg.jwtexample.dto.auto.TokenResponse;
 import com.gdg.jwtexample.service.AuthService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -22,7 +23,7 @@ public class AuthController {
     @PostMapping("/signup")
     public ResponseEntity<Void> signup(@RequestBody @Valid SignupRequest req) {
         authService.signup(req);
-        return ResponseEntity.ok().build();
+        return ResponseEntity.status(HttpStatus.CREATED).build(); // 201 Created
     }
 
     @PostMapping("/login")
